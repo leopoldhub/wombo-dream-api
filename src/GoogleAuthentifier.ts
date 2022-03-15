@@ -8,6 +8,7 @@ export type AuthorisationCache = {
 };
 
 class GoogleAuthentifier extends Authentifier {
+	//TODO: use identitytoolkit library
 	private authorisationUrlTemplate =
 		"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=%(key)s";
 

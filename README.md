@@ -10,6 +10,8 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 
 ## Usage
 
+### Generate a picture
+
 ```javascript
 const WomboApi = require("wombo-dream-api");
 
@@ -19,6 +21,31 @@ WomboApi.buildDefaultInstance()
 	})
 	.then((task) => console.log(task.result.final))
 	.catch(console.error);
+```
+
+### Fetch styles
+
+```javascript
+const WomboApi = require("wombo-dream-api");
+
+WomboApi.buildDefaultInstance()
+	.fetchStyles()
+	.then((styles) => console.log(styles))
+	.catch(console.error);
+```
+
+```json
+[
+	{
+		id: number,
+		name: string,
+		is_visible: boolean,
+		created_at: string,
+		updated_at: string,
+		deleted_at: null | string,
+		photo_url: strung
+	},...
+]
 ```
 
 ## License

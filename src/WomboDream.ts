@@ -18,6 +18,16 @@ export type Task = {
 	} | null;
 };
 
+export type Style = {
+	id: number;
+	name: string;
+	is_visible: boolean;
+	created_at: string;
+	updated_at: string;
+	deleted_at: string | null;
+	photo_url: string;
+};
+
 class WomboDream {
 	originUrl: string;
 
@@ -135,6 +145,22 @@ class WomboDream {
 				}
 
 				resolve(task);
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
+
+	async fetchStyles(): Promise<Array<Style>> {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const requestAgent = await this.buildRequestAgent();
+
+				const styles = await requestAgent.get(
+					"https://paint.api.wombo.ai/api/styles/"
+				);
+
+				resolve(styles.data);
 			} catch (error) {
 				reject(error);
 			}
