@@ -46,7 +46,7 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 const WomboDreamApi = require('wombo-dream-api');
 
 WomboDreamApi.buildDefaultInstance()
-	.generatePicture(10, 'kitten', 10, (task) => {
+	.generatePicture('kitten', 10, (task) => {
 		console.log(task.state, 'stage', task.photo_url_list.length);
 	})
 	.then((task) => console.log(task?.result.final))
