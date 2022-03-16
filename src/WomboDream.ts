@@ -3,10 +3,22 @@ import { sprintf } from 'sprintf-js';
 import sleep from 'sleep-promise';
 import GoogleAuthentifier from './GoogleAuthentifier';
 
+export type TaskImageInputSpec = {
+	mediastore_id: string;
+	weight: 'LOW' | 'MEDIUM' | 'HIGH';
+};
+
+export type TaskSpec = {
+	style: number;
+	prompt: string;
+	display_freq?: number;
+	input_image?: TaskImageInputSpec;
+};
+
 export type Task = {
 	id: string;
 	user_id: string;
-	input_spec: { style: number; prompt: string; display_freq: number } | null;
+	input_spec: TaskSpec | null;
 	state: 'input' | 'generating' | 'completed' | 'failed';
 	premium: boolean;
 	created_at: string;
@@ -28,20 +40,39 @@ export type Style = {
 	photo_url: string;
 };
 
+export type UploadResource = {
+	id: string;
+	media_url: string;
+	created_at: string;
+	expiry_at: string;
+};
+
+export const DEFAULT_DISPLAY_FREQ = 10;
+export const DEFAULT_CHECK_FREQ = 1000;
+
 class WomboDream {
 	constructor(
 		public authentifier: GoogleAuthentifier,
-		public apiUrl: string,
+		public apiTaskUrl: string,
+		public apiStyleUrl: string,
 		public originUrl: string,
-		public premium: boolean = false
+		public uploadUrl: string
 	) {}
 
 	buildApiTaskUrl(taskId: string): string {
-		return sprintf(this.apiUrl, { taskId });
+		return sprintf(this.apiTaskUrl, { taskId });
 	}
 
 	buildRawApiTaskUrl(): string {
 		return this.buildApiTaskUrl('');
+	}
+
+	buildUploadUrl(): string {
+		return this.uploadUrl;
+	}
+
+	buildApiStyleUrl(): string {
+		return this.apiStyleUrl;
 	}
 
 	/**
@@ -60,6 +91,7 @@ class WomboDream {
 							Origin: this.originUrl,
 							Referer: this.originUrl,
 							Authorization: `Bearer ${authorisationToken}`,
+							service: 'Dream',
 						},
 					});
 					resolve(requestAgent);
@@ -73,9 +105,11 @@ class WomboDream {
 	}
 
 	async createTask(
-		display_freq: number,
 		prompt: string,
-		style: number
+		style: number,
+		input_image?: TaskImageInputSpec,
+		display_freq: number = DEFAULT_DISPLAY_FREQ,
+		premium: boolean = false
 	): Promise<Task> {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -85,7 +119,7 @@ class WomboDream {
 					const createdTask = await requestAgent.post(
 						this.buildRawApiTaskUrl(),
 						{
-							premium: this.premium,
+							premium,
 						}
 					);
 
@@ -96,6 +130,7 @@ class WomboDream {
 								display_freq,
 								prompt,
 								style,
+								input_image,
 							},
 						},
 						{
@@ -107,7 +142,15 @@ class WomboDream {
 
 					resolve(task.data);
 				} catch (error) {
-					throw { reason: 'Failed to initialize task', error };
+					throw {
+						reason: 'Failed to initialize task',
+						prompt,
+						style,
+						input_image,
+						display_freq,
+						premium,
+						error,
+					};
 				}
 			} catch (error) {
 				reject(error);
@@ -133,23 +176,33 @@ class WomboDream {
 
 	/**
 	 *
-	 * @param display_freq
 	 * @param prompt the image description
 	 * @param style the image style (number) use <code>fetchStyles()</code> to get the style id
 	 * @param progressCallback a callback function that will be called with the progress of the task
-	 * @param checkFrequency the frequency in milliseconds to check the task status
+	 * @param input_image the input image information
+	 * @param checkFrequency the frequency in millisecond to check the task status
+	 * @param display_freq
+	 * @param premium
 	 * @returns
 	 */
 	async generatePicture(
-		display_freq: number,
 		prompt: string,
 		style: number,
-		progressCallback: (task: Task) => void,
-		checkFrequency: number = 1000
+		progressCallback: (task: Task) => void = () => {},
+		input_image?: TaskImageInputSpec,
+		checkFrequency: number = DEFAULT_CHECK_FREQ,
+		display_freq: number = DEFAULT_DISPLAY_FREQ,
+		premium: boolean = false
 	): Promise<Task> {
 		return new Promise(async (resolve, reject) => {
 			try {
-				let task = await this.createTask(display_freq, prompt, style);
+				let task = await this.createTask(
+					prompt,
+					style,
+					input_image,
+					display_freq,
+					premium
+				);
 
 				try {
 					while (!task.result?.final) {
@@ -162,11 +215,54 @@ class WomboDream {
 					progressCallback({ ...task, state: 'failed' });
 					throw {
 						reason: 'Failed to generate picture',
-						display_freq,
 						prompt,
 						style,
 						progressCallback,
 						checkFrequency,
+						display_freq,
+						input_image,
+						error,
+					};
+				}
+			} catch (error) {
+				reject(error);
+			}
+		});
+	}
+
+	async uploadImage(bufferedImage: Buffer): Promise<UploadResource> {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const requestAgent = await this.buildRequestAgent();
+
+				try {
+					const resourceUploadInfos: UploadResource = (
+						await requestAgent.post(
+							this.buildUploadUrl(),
+							{
+								media_expiry: 'HOURS_72',
+								media_suffix: 'jpeg',
+								num_uploads: 1,
+							},
+							{
+								headers: {
+									service: 'Dream',
+								},
+							}
+						)
+					).data?.shift();
+
+					await requestAgent.put(resourceUploadInfos.media_url, bufferedImage, {
+						headers: {
+							'Content-Type': 'image/jpeg',
+							'Content-Length': bufferedImage.length,
+						},
+					});
+
+					resolve(resourceUploadInfos);
+				} catch (error) {
+					throw {
+						reason: 'Failed to upload image',
 						error,
 					};
 				}
@@ -181,10 +277,7 @@ class WomboDream {
 			try {
 				const requestAgent = await this.buildRequestAgent();
 				try {
-					const styles = await requestAgent.get(
-						'https://paint.api.wombo.ai/api/styles/'
-					);
-
+					const styles = await requestAgent.get(this.buildApiStyleUrl());
 					resolve(styles.data);
 				} catch (error) {
 					throw { reason: 'Failed to fetch styles', error };

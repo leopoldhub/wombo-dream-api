@@ -6,6 +6,12 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 
 ## Changelog
 
+> ### 0.1.3
+>
+> - Adding image upload
+> - Adding image based generation
+> - Updating **[Documentation](documentation.md)**
+
 > ### 0.1.2
 >
 > - Adding **[Documentation](documentation.md)**
@@ -37,20 +43,48 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 ### Generate a picture
 
 ```javascript
-const WomboDreamApi = require("wombo-dream-api");
+const WomboDreamApi = require('wombo-dream-api');
 
 WomboDreamApi.buildDefaultInstance()
-	.generatePicture(10, "kitten", 10, (task) => {
-		console.log(task.state, "stage", task.photo_url_list.length);
+	.generatePicture(10, 'kitten', 10, (task) => {
+		console.log(task.state, 'stage', task.photo_url_list.length);
 	})
 	.then((task) => console.log(task?.result.final))
+	.catch(console.error);
+```
+
+### Generate a picture based on an image
+
+```javascript
+const WomboDreamApi = require('wombo-dream-api');
+
+const instance = WomboDreamApi.buildDefaultInstance();
+
+instance
+	.uploadImage(fs.readFileSync('./image.jpg'))
+	.then((uploadedImageInfo) => {
+		instance
+			.generatePicture(
+				'kitten',
+				10,
+				(task) => {
+					console.log(task.state, 'stage', task.photo_url_list.length);
+				},
+				{
+					mediastore_id: uploadedImageInfo.id,
+					weight: 'HIGH',
+				}
+			)
+			.then((task) => console.log(task?.result.final))
+			.catch(console.error);
+	})
 	.catch(console.error);
 ```
 
 ### Fetch styles
 
 ```javascript
-const WomboDreamApi = require("wombo-dream-api");
+const WomboDreamApi = require('wombo-dream-api');
 
 WomboDreamApi.buildDefaultInstance()
 	.fetchStyles()
