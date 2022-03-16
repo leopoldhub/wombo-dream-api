@@ -2,50 +2,60 @@
 
 Unofficial API for [Wombo Dream](https://app.wombo.art)
 
+<p style="color: lime;">Feel free to contribute to the project <3</p>
+
+## Changelog
+
+> ### 0.1.2
+>
+> - Adding **[Documentation](documentation.md)**
+> - Adding login
+> - Improving authentification token refresh
+> - Removing abstract `Authentifier`
+> - Massive refactoring (can break code)
+
+> ### 0.1.1-fix
+>
+> - Adding the possibility to fetch styles
+
+> ### 0.1.0
+>
+> - Initial release
+
 ## Installation
 
 ### node.js
 
     npm install wombo-dream-api
 
-## Usage
+> Please read the
+> **[Documentation](documentation.md)**
+> to know more about the api.
+
+## Examples
 
 ### Generate a picture
 
 ```javascript
-const WomboApi = require("wombo-dream-api");
+const WomboDreamApi = require("wombo-dream-api");
 
-WomboApi.buildDefaultInstance()
+WomboDreamApi.buildDefaultInstance()
 	.generatePicture(10, "kitten", 10, (task) => {
 		console.log(task.state, "stage", task.photo_url_list.length);
 	})
-	.then((task) => console.log(task.result.final))
+	.then((task) => console.log(task?.result.final))
 	.catch(console.error);
 ```
 
 ### Fetch styles
 
 ```javascript
-const WomboApi = require("wombo-dream-api");
+const WomboDreamApi = require("wombo-dream-api");
 
-WomboApi.buildDefaultInstance()
+WomboDreamApi.buildDefaultInstance()
 	.fetchStyles()
 	.then((styles) => console.log(styles))
 	.catch(console.error);
-```
-
-```json
-[
-	{
-		id: number,
-		name: string,
-		is_visible: boolean,
-		created_at: string,
-		updated_at: string,
-		deleted_at: null | string,
-		photo_url: strung
-	},...
-]
 ```
 
 ## License
