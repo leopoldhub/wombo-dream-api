@@ -3,12 +3,32 @@
   <h1>wombo-dream-api <a href="https://github.com/leopoldhub/wombo-dream-api/blob/master/LICENSE"><img src="https://img.shields.io/github/license/leopoldhub/wombo-dream-api.svg" alt="License"></a> <a href="https://www.npmjs.com/package/wombo-dream-api"><img src="https://img.shields.io/npm/v/wombo-dream-api.svg" alt="NPM version"></a> <a href="https://www.npmjs.com/package/wombo-dream-api"><img src="https://img.shields.io/npm/dm/wombo-dream-api.svg" alt="NPM downloads"></a></h1>
 </a>
 <p>Unofficial API for <a href="https://app.wombo.art">Wombo Dream</a></p>
-<p style="color: lime;">Feel free to contribute to the project <3</p>
+<p style="color: lime;">❤ Feel free to contribute to the project ❤ </p>
 
 
 <a href="#changelog" id="changelog" style="color: inherit; text-decoration: none;">
   <h2>Changelog</h2>
 </a>
+<blockquote>
+
+<a href="#014-fix" id="014-fix" style="color: inherit; text-decoration: none;">
+  <h3>0.1.4-fix</h3>
+</a>
+<ul>
+<li>Throw error when task generation fails</li>
+<li>uploaded images <strong>MUST</strong> be jpg/jpeg</li>
+</ul>
+</blockquote>
+<blockquote>
+
+<a href="#014" id="014" style="color: inherit; text-decoration: none;">
+  <h3>0.1.4</h3>
+</a>
+<ul>
+<li>Using <strong>typedoc</strong> to generate <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
+<li>Updating <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
+</ul>
+</blockquote>
 <blockquote>
 
 <a href="#013" id="013" style="color: inherit; text-decoration: none;">
@@ -17,7 +37,7 @@
 <ul>
 <li>Adding image upload</li>
 <li>Adding image based generation</li>
-<li>Updating <strong><a href="documentation.md">Documentation</a></strong></li>
+<li>Updating <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
 </ul>
 </blockquote>
 <blockquote>
@@ -26,7 +46,7 @@
   <h3>0.1.2</h3>
 </a>
 <ul>
-<li>Adding <strong><a href="documentation.md">Documentation</a></strong></li>
+<li>Adding <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
 <li>Adding login</li>
 <li>Improving authentification token refresh</li>
 <li>Removing abstract <code>Authentifier</code></li>
@@ -63,8 +83,8 @@
 </code></pre>
 <blockquote>
 <p>Please read the
-<strong><a href="documentation.md">Documentation</a></strong>
-to know more about the api.</p>
+<strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong>
+to learn more about the api.</p>
 </blockquote>
 
 <a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
@@ -88,6 +108,9 @@ to know more about the api.</p>
 </a>
 <pre><code class="language-javascript"><span class="hl-2">const</span><span class="hl-1"> </span><span class="hl-3">WomboDreamApi</span><span class="hl-1"> = </span><span class="hl-4">require</span><span class="hl-1">(</span><span class="hl-5">&#39;wombo-dream-api&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">WomboDreamApi</span><span class="hl-1">.</span><span class="hl-4">buildDefaultInstance</span><span class="hl-1">()</span><br/><span class="hl-1">    .</span><span class="hl-4">fetchStyles</span><span class="hl-1">()</span><br/><span class="hl-1">    .</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">styles</span><span class="hl-1">) </span><span class="hl-2">=&gt;</span><span class="hl-1"> </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">styles</span><span class="hl-1">))</span><br/><span class="hl-1">    .</span><span class="hl-4">catch</span><span class="hl-1">(</span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">);</span>
 </code></pre>
+<blockquote>
+<p>More examples can be found in the <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></p>
+</blockquote>
 
 <a href="#license" id="license" style="color: inherit; text-decoration: none;">
   <h2>License</h2>

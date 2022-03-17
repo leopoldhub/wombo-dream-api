@@ -228,6 +228,7 @@ export class WomboDream {
 			while (!task.result?.final) {
 				task = await this.fetchTaskInfos(task.id);
 				progressCallback(task);
+				if (task.state === 'failed') throw new Error();
 				await sleep(checkFrequency);
 			}
 			return task;
@@ -241,7 +242,7 @@ export class WomboDream {
 	}
 
 	/**
-	 * Upload an image for later use
+	 * Upload an image for later use (**MUST** be a jpg/jpeg)
 	 *
 	 * @example
 	 * ```ts

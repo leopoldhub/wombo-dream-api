@@ -6,6 +6,11 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 
 ## Changelog
 
+> ### 0.1.4-fix
+>
+> - Throw error when task generation fails
+> - uploaded images **MUST** be jpg/jpeg
+
 > ### 0.1.4
 >
 > - Using **typedoc** to generate **[Documentation][documentation-url]**
