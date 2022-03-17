@@ -4,31 +4,8 @@
 name: Node.js Package
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning' 
-        type: choice
-        options:
-        - info
-        - warning
-        - debug 
-      print_tags:
-        description: 'True to print to STDOUT'
-        required: true 
-        type: boolean 
-      tags:
-        description: 'Test scenario tags'
-        required: true 
-        type: string
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: true 
-#  release:
-#    types: [created]
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -62,6 +39,6 @@ jobs:
           path: ./*
           key: ${{ github.sha }}
       - run: ls
-      #- run: npm publish
-      #  env:
-      #    NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
