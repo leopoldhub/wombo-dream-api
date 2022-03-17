@@ -10,5 +10,10 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true
 	},
+	"typedocOptions": {
+		"entryPoints": ["src/index.ts"],
+		"out": "docs",
+		"excludePrivate": true
+	},
 	"exclude": ["node_modules/**", "dist/**"]
 }

@@ -2,19 +2,24 @@
 
 Unofficial API for [Wombo Dream](https://app.wombo.art)
 
-<p style="color: lime;">Feel free to contribute to the project <3</p>
+<p style="color: lime;">❤ Feel free to contribute to the project ❤ </p>
 
 ## Changelog
+
+> ### 0.1.4
+>
+> - Using **typedoc** to generate **[Documentation][documentation-url]**
+> - Updating **[Documentation][documentation-url]**
 
 > ### 0.1.3
 >
 > - Adding image upload
 > - Adding image based generation
-> - Updating **[Documentation](documentation.md)**
+> - Updating **[Documentation][documentation-url]**
 
 > ### 0.1.2
 >
-> - Adding **[Documentation](documentation.md)**
+> - Adding **[Documentation][documentation-url]**
 > - Adding login
 > - Improving authentification token refresh
 > - Removing abstract `Authentifier`
@@ -35,8 +40,8 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
     npm install wombo-dream-api
 
 > Please read the
-> **[Documentation](documentation.md)**
-> to know more about the api.
+> **[Documentation][documentation-url]**
+> to learn more about the api.
 
 ## Examples
 
@@ -92,10 +97,13 @@ WomboDreamApi.buildDefaultInstance()
 	.catch(console.error);
 ```
 
+> More examples can be found in the **[Documentation][documentation-url]**
+
 ## License
 
 [MIT](LICENSE)
 
+[documentation-url]: https://leopoldhub.github.io/wombo-dream-api/
 [license-image]: https://img.shields.io/github/license/leopoldhub/wombo-dream-api.svg
 [license-url]: https://github.com/leopoldhub/wombo-dream-api/blob/master/LICENSE
 [npm-image]: https://img.shields.io/npm/v/wombo-dream-api.svg

@@ -1,12 +1,15 @@
 {
 	"name": "wombo-dream-api",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "Unofficial API for Wombo Dream",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsc",
-		"prettify": "npx prettier --write \"**/*.ts\""
+		"build": "npm run clean && npm run prettify && npm run doc && npm run compile",
+		"compile": "tsc",
+		"prettify": "npx prettier --write \"**/*.ts\"",
+		"doc": "typedoc",
+		"clean": "rimraf dist && rimraf docs"
 	},
 	"repository": {
 		"type": "git",
@@ -32,6 +35,9 @@
 	"devDependencies": {
 		"@types/sprintf-js": "^1.1.2",
 		"prettier": "^2.5.1",
+		"rimraf": "^3.0.2",
+		"typedoc": "^0.22.13",
+		"typedoc-plugin-missing-exports": "^0.22.6",
 		"typescript": "^4.6.2"
 	},
 	"bugs": {
