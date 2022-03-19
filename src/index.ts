@@ -6,6 +6,7 @@ export const DEFAULT_TASK_API_URL = 'https://paint.api.wombo.ai/api/%(suffix)s';
 export const DEFAULT_TASK_API_SUFFIX = 'tasks/%(taskId)s';
 export const DEFAULT_SHOP_API_SUFFIX = 'shop/%(taskId)s';
 export const DEFAULT_STYLE_API_SUFFIX = 'styles/';
+export const DEFAULT_GALLERY_API_SUFFIX = 'gallery/%(taskId)s';
 export const DEFAULT_UPLOAD_URL = 'https://mediastore.api.wombo.ai/io/';
 export const DEFAULT_AUTHENTIFICATION_KEY =
 	'AIzaSyDCvp5MTJLUdtBYEKYWXJrlLzu1zuKM6Xw';
@@ -20,6 +21,7 @@ export const buildDefaultInstance = (email?: string, password?: string) => {
 		DEFAULT_TASK_API_SUFFIX,
 		DEFAULT_SHOP_API_SUFFIX,
 		DEFAULT_STYLE_API_SUFFIX,
+		DEFAULT_GALLERY_API_SUFFIX,
 		DEFAULT_ORIGIN_URL,
 		DEFAULT_UPLOAD_URL
 	);

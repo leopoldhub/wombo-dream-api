@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { sprintf } from 'sprintf-js';
 import sleep from 'sleep-promise';
 import GoogleAuthentifier from './GoogleAuthentifier';
-import { Task, TaskImageInputSpec, UploadResource } from './types';
+import { SavedTask, Task, TaskImageInputSpec, UploadResource } from './types';
 import { Style } from 'util';
 
 export const DEFAULT_DISPLAY_FREQ = 10;
@@ -15,6 +15,7 @@ export class WomboDream {
 		public apiTaskSuffix: string,
 		public apiShopSuffix: string,
 		public apiStyleSuffix: string,
+		public apiGallerySuffix: string,
 		public originUrl: string,
 		public uploadUrl: string
 	) {}
@@ -29,12 +30,6 @@ export class WomboDream {
 		return this.buildApiTaskUrl('');
 	}
 
-	buildApiTaskShopUrl(taskId: string): string {
-		return sprintf(this.apiTaskUrl, {
-			suffix: sprintf(this.apiShopSuffix, { taskId }),
-		});
-	}
-
 	buildUploadUrl(): string {
 		return this.uploadUrl;
 	}
@@ -43,6 +38,22 @@ export class WomboDream {
 		return sprintf(this.apiTaskUrl, {
 			suffix: this.apiStyleSuffix,
 		});
+	}
+
+	buildApiTaskShopUrl(taskId: string): string {
+		return sprintf(this.apiTaskUrl, {
+			suffix: sprintf(this.apiShopSuffix, { taskId }),
+		});
+	}
+
+	buildApiGalleryUrl(taskId: string): string {
+		return sprintf(this.apiTaskUrl, {
+			suffix: sprintf(this.apiGallerySuffix, { taskId }),
+		});
+	}
+
+	buildRawApiGalleryUrl(): string {
+		return this.buildApiGalleryUrl('');
 	}
 
 	/**
@@ -333,6 +344,106 @@ export class WomboDream {
 			return taskShopUrl.data.url;
 		} catch (error) {
 			throw { reason: 'Failed to fetch task shop url', error };
+		}
+	}
+
+	/**
+	 * Save task to the gallery
+	 *
+	 * @warning must be done with the same account as the task was created
+	 * @warning you must be logged as a user to use it
+	 *
+	 * @example
+	 * ```ts
+	 * const taskId:string;
+	 * dreamInstance.saveTaskToGallery(taskId, "wonderful kitty").then(console.log);
+	 * ```
+	 */
+	async saveTaskToGallery(
+		taskId: string,
+		name: string = '',
+		isPublic: boolean = false,
+		isPromptVisible: boolean = true
+	): Promise<SavedTask> {
+		const requestAgent = await this.buildHttpRequestAgent();
+		try {
+			const savedTask = await requestAgent.post(this.buildRawApiGalleryUrl(), {
+				task_id: taskId,
+				name,
+				is_public: isPublic,
+				is_prompt_visible: isPromptVisible,
+			});
+			return savedTask.data;
+		} catch (error) {
+			throw { reason: 'Failed to save task to gallery', error };
+		}
+	}
+
+	/**
+	 * Fetch a gallery saved task
+	 *
+	 * @warning task_id != task_gallery_id
+	 * @warning you must be logged as a user to use it
+	 *
+	 * @example
+	 * ```ts
+	 * const taskGalleryId:number;
+	 * dreamInstance.fetchGalleryTask(taskGalleryId).then(console.log);
+	 * ```
+	 */
+	async fetchGalleryTask(taskGalleryId: number): Promise<SavedTask> {
+		const requestAgent = await this.buildHttpRequestAgent();
+		try {
+			const galleryTask = await requestAgent.get(
+				this.buildApiGalleryUrl(`${taskGalleryId}`)
+			);
+			return galleryTask.data;
+		} catch (error) {
+			throw { reason: 'Failed to fetch gallery task', error };
+		}
+	}
+
+	/**
+	 * Fetch gallery saved tasks
+	 *
+	 * @warning you must be logged as a user to use it
+	 *
+	 * @example
+	 * ```ts
+	 * dreamInstance.fetchGalleryTasks().then(console.log);
+	 * ```
+	 */
+	async fetchGalleryTasks(): Promise<Array<SavedTask>> {
+		const requestAgent = await this.buildHttpRequestAgent();
+		try {
+			const galleryTask = await requestAgent.get(this.buildRawApiGalleryUrl());
+			return galleryTask.data.items;
+		} catch (error) {
+			throw { reason: 'failed to fetch gallery tasks', error };
+		}
+	}
+
+	/**
+	 * Fetch a gallery saved task
+	 *
+	 * @warning task_id != task_gallery_id
+	 * @warning you must be logged as a user to use it
+	 *
+	 * @example
+	 * ```ts
+	 * const taskGalleryId:number;
+	 * dreamInstance.deleteGalleryTask(taskGalleryId);
+	 * ```
+	 */
+	async deleteGalleryTask(taskGalleryId: number): Promise<void> {
+		const requestAgent = await this.buildHttpRequestAgent();
+		try {
+			const galleryTask = await requestAgent.delete(
+				this.buildApiGalleryUrl(`${taskGalleryId}`)
+			);
+			return galleryTask.data;
+		} catch (error) {
+			throw { reason: 'Failed to delete gallery task', error };
 		}
 	}
 }

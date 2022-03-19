@@ -9,6 +9,7 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 > ### 0.1.5
 >
 > - Can now fetch tasks shop url
+> - Can now save, fetch, fetch all and delete tasks in the gallery
 
 > ### 0.1.4-fix
 >
