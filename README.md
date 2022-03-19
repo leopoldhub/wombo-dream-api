@@ -49,6 +49,7 @@ WomboDreamApi.buildDefaultInstance()
 
 ```javascript
 const WomboDreamApi = require('wombo-dream-api');
+const fs = require('fs');
 
 const instance = WomboDreamApi.buildDefaultInstance();
 

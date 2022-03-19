@@ -272,19 +272,11 @@ export class WomboDream {
 
 		try {
 			const resourceUploadInfos: UploadResource = (
-				await requestAgent.post(
-					this.buildUploadUrl(),
-					{
-						media_expiry: 'HOURS_72',
-						media_suffix: 'jpeg',
-						num_uploads: 1,
-					},
-					{
-						headers: {
-							service: 'Dream',
-						},
-					}
-				)
+				await requestAgent.post(this.buildUploadUrl(), {
+					media_expiry: 'HOURS_72',
+					media_suffix: 'jpeg',
+					num_uploads: 1,
+				})
 			).data?.shift();
 
 			await requestAgent.put(resourceUploadInfos.media_url, bufferedImage, {
