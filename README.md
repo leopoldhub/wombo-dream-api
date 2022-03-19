@@ -6,6 +6,10 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 
 ## Changelog
 
+> ### 0.1.5
+>
+> - Can now fetch tasks shop url
+
 > ### 0.1.4-fix
 >
 > - Throw error when task generation fails
@@ -15,28 +19,6 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 >
 > - Using **typedoc** to generate **[Documentation][documentation-url]**
 > - Updating **[Documentation][documentation-url]**
-
-> ### 0.1.3
->
-> - Adding image upload
-> - Adding image based generation
-> - Updating **[Documentation][documentation-url]**
-
-> ### 0.1.2
->
-> - Adding **[Documentation][documentation-url]**
-> - Adding login
-> - Improving authentification token refresh
-> - Removing abstract `Authentifier`
-> - Massive refactoring (can break code)
-
-> ### 0.1.1-fix
->
-> - Adding the possibility to fetch styles
-
-> ### 0.1.0
->
-> - Initial release
 
 ## Installation
 
