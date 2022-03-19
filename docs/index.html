@@ -11,6 +11,16 @@
 </a>
 <blockquote>
 
+<a href="#015" id="015" style="color: inherit; text-decoration: none;">
+  <h3>0.1.5</h3>
+</a>
+<ul>
+<li>Can now fetch tasks shop url</li>
+<li>Can now save, fetch, fetch all and delete tasks in the gallery</li>
+</ul>
+</blockquote>
+<blockquote>
+
 <a href="#014-fix" id="014-fix" style="color: inherit; text-decoration: none;">
   <h3>0.1.4-fix</h3>
 </a>
@@ -27,48 +37,6 @@
 <ul>
 <li>Using <strong>typedoc</strong> to generate <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
 <li>Updating <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
-</ul>
-</blockquote>
-<blockquote>
-
-<a href="#013" id="013" style="color: inherit; text-decoration: none;">
-  <h3>0.1.3</h3>
-</a>
-<ul>
-<li>Adding image upload</li>
-<li>Adding image based generation</li>
-<li>Updating <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
-</ul>
-</blockquote>
-<blockquote>
-
-<a href="#012" id="012" style="color: inherit; text-decoration: none;">
-  <h3>0.1.2</h3>
-</a>
-<ul>
-<li>Adding <strong><a href="https://leopoldhub.github.io/wombo-dream-api/">Documentation</a></strong></li>
-<li>Adding login</li>
-<li>Improving authentification token refresh</li>
-<li>Removing abstract <code>Authentifier</code></li>
-<li>Massive refactoring (can break code)</li>
-</ul>
-</blockquote>
-<blockquote>
-
-<a href="#011-fix" id="011-fix" style="color: inherit; text-decoration: none;">
-  <h3>0.1.1-fix</h3>
-</a>
-<ul>
-<li>Adding the possibility to fetch styles</li>
-</ul>
-</blockquote>
-<blockquote>
-
-<a href="#010" id="010" style="color: inherit; text-decoration: none;">
-  <h3>0.1.0</h3>
-</a>
-<ul>
-<li>Initial release</li>
 </ul>
 </blockquote>
 
@@ -100,7 +68,7 @@ to learn more about the api.</p>
 <a href="#generate-a-picture-based-on-an-image" id="generate-a-picture-based-on-an-image" style="color: inherit; text-decoration: none;">
   <h3>Generate a picture based on an image</h3>
 </a>
-<pre><code class="language-javascript"><span class="hl-2">const</span><span class="hl-1"> </span><span class="hl-3">WomboDreamApi</span><span class="hl-1"> = </span><span class="hl-4">require</span><span class="hl-1">(</span><span class="hl-5">&#39;wombo-dream-api&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-2">const</span><span class="hl-1"> </span><span class="hl-3">instance</span><span class="hl-1"> = </span><span class="hl-0">WomboDreamApi</span><span class="hl-1">.</span><span class="hl-4">buildDefaultInstance</span><span class="hl-1">();</span><br/><br/><span class="hl-0">instance</span><br/><span class="hl-1">    .</span><span class="hl-4">uploadImage</span><span class="hl-1">(</span><span class="hl-0">fs</span><span class="hl-1">.</span><span class="hl-4">readFileSync</span><span class="hl-1">(</span><span class="hl-5">&#39;./image.jpg&#39;</span><span class="hl-1">))</span><br/><span class="hl-1">    .</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">uploadedImageInfo</span><span class="hl-1">) </span><span class="hl-2">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-0">instance</span><br/><span class="hl-1">            .</span><span class="hl-4">generatePicture</span><span class="hl-1">(</span><br/><span class="hl-1">                </span><span class="hl-5">&#39;kitten&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">                </span><span class="hl-6">10</span><span class="hl-1">,</span><br/><span class="hl-1">                (</span><span class="hl-0">task</span><span class="hl-1">) </span><span class="hl-2">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">                    </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">task</span><span class="hl-1">.</span><span class="hl-0">state</span><span class="hl-1">, </span><span class="hl-5">&#39;stage&#39;</span><span class="hl-1">, </span><span class="hl-0">task</span><span class="hl-1">.</span><span class="hl-0">photo_url_list</span><span class="hl-1">.</span><span class="hl-0">length</span><span class="hl-1">);</span><br/><span class="hl-1">                },</span><br/><span class="hl-1">                {</span><br/><span class="hl-1">                    </span><span class="hl-0">mediastore_id:</span><span class="hl-1"> </span><span class="hl-0">uploadedImageInfo</span><span class="hl-1">.</span><span class="hl-0">id</span><span class="hl-1">,</span><br/><span class="hl-1">                    </span><span class="hl-0">weight:</span><span class="hl-1"> </span><span class="hl-5">&#39;HIGH&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">                }</span><br/><span class="hl-1">            )</span><br/><span class="hl-1">            .</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">task</span><span class="hl-1">) </span><span class="hl-2">=&gt;</span><span class="hl-1"> </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">task</span><span class="hl-1">?.</span><span class="hl-0">result</span><span class="hl-1">.</span><span class="hl-0">final</span><span class="hl-1">))</span><br/><span class="hl-1">            .</span><span class="hl-4">catch</span><span class="hl-1">(</span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">);</span><br/><span class="hl-1">    })</span><br/><span class="hl-1">    .</span><span class="hl-4">catch</span><span class="hl-1">(</span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">);</span>
+<pre><code class="language-javascript"><span class="hl-2">const</span><span class="hl-1"> </span><span class="hl-3">WomboDreamApi</span><span class="hl-1"> = </span><span class="hl-4">require</span><span class="hl-1">(</span><span class="hl-5">&#39;wombo-dream-api&#39;</span><span class="hl-1">);</span><br/><span class="hl-2">const</span><span class="hl-1"> </span><span class="hl-3">fs</span><span class="hl-1"> = </span><span class="hl-4">require</span><span class="hl-1">(</span><span class="hl-5">&#39;fs&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-2">const</span><span class="hl-1"> </span><span class="hl-3">instance</span><span class="hl-1"> = </span><span class="hl-0">WomboDreamApi</span><span class="hl-1">.</span><span class="hl-4">buildDefaultInstance</span><span class="hl-1">();</span><br/><br/><span class="hl-0">instance</span><br/><span class="hl-1">    .</span><span class="hl-4">uploadImage</span><span class="hl-1">(</span><span class="hl-0">fs</span><span class="hl-1">.</span><span class="hl-4">readFileSync</span><span class="hl-1">(</span><span class="hl-5">&#39;./image.jpg&#39;</span><span class="hl-1">))</span><br/><span class="hl-1">    .</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">uploadedImageInfo</span><span class="hl-1">) </span><span class="hl-2">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-0">instance</span><br/><span class="hl-1">            .</span><span class="hl-4">generatePicture</span><span class="hl-1">(</span><br/><span class="hl-1">                </span><span class="hl-5">&#39;kitten&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">                </span><span class="hl-6">10</span><span class="hl-1">,</span><br/><span class="hl-1">                (</span><span class="hl-0">task</span><span class="hl-1">) </span><span class="hl-2">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">                    </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">task</span><span class="hl-1">.</span><span class="hl-0">state</span><span class="hl-1">, </span><span class="hl-5">&#39;stage&#39;</span><span class="hl-1">, </span><span class="hl-0">task</span><span class="hl-1">.</span><span class="hl-0">photo_url_list</span><span class="hl-1">.</span><span class="hl-0">length</span><span class="hl-1">);</span><br/><span class="hl-1">                },</span><br/><span class="hl-1">                {</span><br/><span class="hl-1">                    </span><span class="hl-0">mediastore_id:</span><span class="hl-1"> </span><span class="hl-0">uploadedImageInfo</span><span class="hl-1">.</span><span class="hl-0">id</span><span class="hl-1">,</span><br/><span class="hl-1">                    </span><span class="hl-0">weight:</span><span class="hl-1"> </span><span class="hl-5">&#39;HIGH&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">                }</span><br/><span class="hl-1">            )</span><br/><span class="hl-1">            .</span><span class="hl-4">then</span><span class="hl-1">((</span><span class="hl-0">task</span><span class="hl-1">) </span><span class="hl-2">=&gt;</span><span class="hl-1"> </span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-4">log</span><span class="hl-1">(</span><span class="hl-0">task</span><span class="hl-1">?.</span><span class="hl-0">result</span><span class="hl-1">.</span><span class="hl-0">final</span><span class="hl-1">))</span><br/><span class="hl-1">            .</span><span class="hl-4">catch</span><span class="hl-1">(</span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">);</span><br/><span class="hl-1">    })</span><br/><span class="hl-1">    .</span><span class="hl-4">catch</span><span class="hl-1">(</span><span class="hl-0">console</span><span class="hl-1">.</span><span class="hl-0">error</span><span class="hl-1">);</span>
 </code></pre>
 
 <a href="#fetch-styles" id="fetch-styles" style="color: inherit; text-decoration: none;">
@@ -116,4 +84,4 @@ to learn more about the api.</p>
   <h2>License</h2>
 </a>
 <p><a href="LICENSE">MIT</a></p>
-</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li><li class=" tsd-kind-namespace"><a href="modules/_internal_.html">&lt;internal&gt;</a></li><li class=" tsd-kind-namespace"><a href="modules/GoogleAuthentifier.html">Google<wbr/>Authentifier</a></li><li class=" tsd-kind-namespace"><a href="modules/Types.html">Types</a></li><li class=" tsd-kind-namespace"><a href="modules/WomboDream.html">Wombo<wbr/>Dream</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_AUTHENTIFICATION_KEY" class="tsd-kind-icon">DEFAULT_<wbr/>AUTHENTIFICATION_<wbr/>KEY</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_ORIGIN_URL" class="tsd-kind-icon">DEFAULT_<wbr/>ORIGIN_<wbr/>URL</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_STYLE_API_URL" class="tsd-kind-icon">DEFAULT_<wbr/>STYLE_<wbr/>API_<wbr/>URL</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_TASK_API_URL" class="tsd-kind-icon">DEFAULT_<wbr/>TASK_<wbr/>API_<wbr/>URL</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_UPLOAD_URL" class="tsd-kind-icon">DEFAULT_<wbr/>UPLOAD_<wbr/>URL</a></li><li class="tsd-kind-function"><a href="modules.html#buildDefaultInstance" class="tsd-kind-icon">build<wbr/>Default<wbr/>Instance</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li><li class=" tsd-kind-namespace"><a href="modules/_internal_.html">&lt;internal&gt;</a></li><li class=" tsd-kind-namespace"><a href="modules/GoogleAuthentifier.html">Google<wbr/>Authentifier</a></li><li class=" tsd-kind-namespace"><a href="modules/Types.html">Types</a></li><li class=" tsd-kind-namespace"><a href="modules/WomboDream.html">Wombo<wbr/>Dream</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_AUTHENTIFICATION_KEY" class="tsd-kind-icon">DEFAULT_<wbr/>AUTHENTIFICATION_<wbr/>KEY</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_GALLERY_API_SUFFIX" class="tsd-kind-icon">DEFAULT_<wbr/>GALLERY_<wbr/>API_<wbr/>SUFFIX</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_ORIGIN_URL" class="tsd-kind-icon">DEFAULT_<wbr/>ORIGIN_<wbr/>URL</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_SHOP_API_SUFFIX" class="tsd-kind-icon">DEFAULT_<wbr/>SHOP_<wbr/>API_<wbr/>SUFFIX</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_STYLE_API_SUFFIX" class="tsd-kind-icon">DEFAULT_<wbr/>STYLE_<wbr/>API_<wbr/>SUFFIX</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_TASK_API_SUFFIX" class="tsd-kind-icon">DEFAULT_<wbr/>TASK_<wbr/>API_<wbr/>SUFFIX</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_TASK_API_URL" class="tsd-kind-icon">DEFAULT_<wbr/>TASK_<wbr/>API_<wbr/>URL</a></li><li class="tsd-kind-variable"><a href="modules.html#DEFAULT_UPLOAD_URL" class="tsd-kind-icon">DEFAULT_<wbr/>UPLOAD_<wbr/>URL</a></li><li class="tsd-kind-function"><a href="modules.html#buildDefaultInstance" class="tsd-kind-icon">build<wbr/>Default<wbr/>Instance</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>

@@ -1,6 +1,6 @@
 {
 	"name": "wombo-dream-api",
-	"version": "0.1.4fix",
+	"version": "0.1.5",
 	"description": "Unofficial API for Wombo Dream",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

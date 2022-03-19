@@ -25,6 +25,24 @@ export type Task = {
 	} | null;
 };
 
+export type SavedTask = {
+	id: number;
+	user_id: string;
+	task_id: string;
+	image_url: string;
+	is_public: boolean;
+	name: string;
+	prompt: string;
+	prompt_visible: boolean;
+	result: {
+		final: string;
+	};
+	tradingcard_url: string | null;
+	created_at: string;
+	updated_at: string;
+	deleted_at: string | null;
+};
+
 export type Style = {
 	id: number;
 	name: string;
