@@ -12,17 +12,27 @@ export class WomboDream {
 	constructor(
 		public authentifier: GoogleAuthentifier,
 		public apiTaskUrl: string,
-		public apiStyleUrl: string,
+		public apiTaskSuffix: string,
+		public apiShopSuffix: string,
+		public apiStyleSuffix: string,
 		public originUrl: string,
 		public uploadUrl: string
 	) {}
 
 	buildApiTaskUrl(taskId: string): string {
-		return sprintf(this.apiTaskUrl, { taskId });
+		return sprintf(this.apiTaskUrl, {
+			suffix: sprintf(this.apiTaskSuffix, { taskId }),
+		});
 	}
 
 	buildRawApiTaskUrl(): string {
 		return this.buildApiTaskUrl('');
+	}
+
+	buildApiTaskShopUrl(taskId: string): string {
+		return sprintf(this.apiTaskUrl, {
+			suffix: sprintf(this.apiShopSuffix, { taskId }),
+		});
 	}
 
 	buildUploadUrl(): string {
@@ -30,7 +40,9 @@ export class WomboDream {
 	}
 
 	buildApiStyleUrl(): string {
-		return this.apiStyleUrl;
+		return sprintf(this.apiTaskUrl, {
+			suffix: this.apiStyleSuffix,
+		});
 	}
 
 	/**
@@ -93,6 +105,8 @@ export class WomboDream {
 	 *
 	 * @param input_image use an image as input
 	 * @param display_freq how often the task makes intermediate renders
+	 *
+	 * @warning must be done with the same account as the task was created
 	 *
 	 * @example
 	 * ```ts
@@ -175,6 +189,8 @@ export class WomboDream {
 	/**
 	 * Fetch the current infos of a Task
 	 *
+	 * @warning must be done with the same account as the task was created
+	 *
 	 * @example
 	 * ```ts
 	 * const taskId:string;
@@ -242,7 +258,9 @@ export class WomboDream {
 	}
 
 	/**
-	 * Upload an image for later use (**MUST** be a jpg/jpeg)
+	 * Upload an image for later use
+	 *
+	 * @warning jpg/jpeg are the only supported image formats
 	 *
 	 * @example
 	 * ```ts
@@ -300,6 +318,29 @@ export class WomboDream {
 			return styles.data;
 		} catch (error) {
 			throw { reason: 'Failed to fetch styles', error };
+		}
+	}
+
+	/**
+	 * Fetch shop url from task id
+	 *
+	 * @warning must be done with the same account as the task was created
+	 *
+	 * @example
+	 * ```ts
+	 * const taskId:string;
+	 * dreamInstance.fetchTaskShopUrl(taskId).then(console.log);
+	 * ```
+	 */
+	async fetchTaskShopUrl(taskId: string): Promise<String> {
+		const requestAgent = await this.buildHttpRequestAgent();
+		try {
+			const taskShopUrl = await requestAgent.get(
+				this.buildApiTaskShopUrl(taskId)
+			);
+			return taskShopUrl.data.url;
+		} catch (error) {
+			throw { reason: 'Failed to fetch task shop url', error };
 		}
 	}
 }
