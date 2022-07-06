@@ -14,7 +14,7 @@ export type Task = {
 	id: string;
 	user_id: string;
 	input_spec: TaskInputSpec | null;
-	state: 'input' | 'generating' | 'completed' | 'failed';
+	state: 'input' | 'pending' | 'generating' | 'completed' | 'failed';
 	premium: boolean;
 	created_at: string;
 	updated_at: string;
@@ -68,9 +68,7 @@ export type AuthorisationCache =
 	  }
 	| undefined;
 
-export type CreditentialsBody =
-	| {
-			email: string;
-			password: string;
-	  }
-	| any;
+export type CredentialsBody = {
+	email: string;
+	password: string;
+};

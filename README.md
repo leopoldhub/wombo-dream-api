@@ -4,7 +4,19 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 
 <p style="color: lime;">❤ Feel free to contribute to the project ❤ </p>
 
+## Upcomming features
+
+- NFT minting
+- change of password/username/email/profile picture
+- ability to browse other users' profiles
+
 ## Changelog
+
+> ### 0.1.6
+>
+> - Refactoring
+> - Documentation updated
+> - API testing
 
 > ### 0.1.5
 >
@@ -31,59 +43,72 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 > **[Documentation][documentation-url]**
 > to learn more about the api.
 
-## Examples
-
-### Generate a picture
+## Example
 
 ```javascript
-const WomboDreamApi = require('wombo-dream-api');
-
-WomboDreamApi.buildDefaultInstance()
-	.generatePicture('kitten', 10, (task) => {
-		console.log(task.state, 'stage', task.photo_url_list.length);
-	})
-	.then((task) => console.log(task?.result.final))
-	.catch(console.error);
-```
-
-### Generate a picture based on an image
-
-```javascript
-const WomboDreamApi = require('wombo-dream-api');
+const { buildDefaultInstance } = require('wombo-dream-api');
 const fs = require('fs');
 
-const instance = WomboDreamApi.buildDefaultInstance();
+(async () => {
+	try {
+		const credentials = {
+			email: 'mysuperemail@gmail.com',
+			password: 'mypassword',
+		};
 
-instance
-	.uploadImage(fs.readFileSync('./image.jpg'))
-	.then((uploadedImageInfo) => {
-		instance
-			.generatePicture(
-				'kitten',
-				10,
-				(task) => {
-					console.log(task.state, 'stage', task.photo_url_list.length);
-				},
-				{
-					mediastore_id: uploadedImageInfo.id,
-					weight: 'HIGH',
-				}
-			)
-			.then((task) => console.log(task?.result.final))
-			.catch(console.error);
-	})
-	.catch(console.error);
-```
+		// signin is automatically done when you interract with the api if you pass credentials
+		const wombo = buildDefaultInstance(credentials);
 
-### Fetch styles
+		// if you want to sign up as new user:
+		// await wombo.authentifier.signUp(credentials);
 
-```javascript
-const WomboDreamApi = require('wombo-dream-api');
+		// fetch all styles
+		const styles = await wombo.fetchStyles();
+		console.log(styles.map((style) => `[${style.id}] ${style.name}`));
 
-WomboDreamApi.buildDefaultInstance()
-	.fetchStyles()
-	.then((styles) => console.log(styles))
-	.catch(console.error);
+		// upload image [ONLY JPEG SUPPORTED]
+		const uploadedImage = await wombo.uploadImage(
+			fs.readFileSync('./image.jpeg')
+		);
+
+		// generate picture from image
+		const generatedTask = await wombo.generatePicture(
+			'mountain',
+			styles[0].id,
+			(taskInProgress) => {
+				console.log(
+					`[${taskInProgress.id}]: ${taskInProgress.state} | step: ${taskInProgress.photo_url_list.length}`
+				);
+			},
+			{ mediastore_id: uploadedImage.id, weight: 'HIGH' }
+		);
+
+		console.log(
+			`[${generatedTask.id}]: ${generatedTask.state} | final url: ${generatedTask.result?.final}`
+		);
+
+		// to interract with the gallery, YOU NEED TO HAVE A USERNAME!
+		// if you just created the account and it doesn't have a username, set it with:
+		// await wombo.setUsername('myusername');
+
+		// save an image in the gallery
+		const savedTask = await wombo.saveTaskToGallery(
+			generatedTask.id,
+			'my wonderful creation',
+			true,
+			true
+		);
+
+		console.log('image saved!');
+
+		// obtain gallery tasks
+		const galleryTasks = await wombo.fetchGalleryTasks();
+
+		console.log(galleryTasks);
+	} catch (error) {
+		console.error(error);
+	}
+})();
 ```
 
 > More examples can be found in the **[Documentation][documentation-url]**

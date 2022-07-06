@@ -1,11 +1,12 @@
 {
 	"name": "wombo-dream-api",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"description": "Unofficial API for Wombo Dream",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "npm run clean && npm run prettify && npm run doc && npm run compile",
+		"build": "npm run clean && npm run prettify && npm run test && npm run doc && npm run compile",
+		"test": "jest",
 		"compile": "tsc",
 		"prettify": "npx prettier --write \"**/*.ts\"",
 		"doc": "typedoc",
@@ -33,9 +34,12 @@
 		"sprintf-js": "^1.1.2"
 	},
 	"devDependencies": {
+		"@types/jest": "^28.1.4",
 		"@types/sprintf-js": "^1.1.2",
+		"jest": "^28.1.2",
 		"prettier": "^2.5.1",
 		"rimraf": "^3.0.2",
+		"ts-jest": "^28.0.5",
 		"typedoc": "^0.22.13",
 		"typedoc-plugin-missing-exports": "^0.22.6",
 		"typescript": "^4.6.2"

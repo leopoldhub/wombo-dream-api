@@ -1,4 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, {
+	AxiosInstance,
+	AxiosRequestConfig,
+	AxiosRequestHeaders,
+} from 'axios';
 import { sprintf } from 'sprintf-js';
 import sleep from 'sleep-promise';
 import GoogleAuthentifier from './GoogleAuthentifier';
@@ -12,6 +16,7 @@ export class WomboDream {
 	constructor(
 		public authentifier: GoogleAuthentifier,
 		public apiTaskUrl: string,
+		public apiUserSuffix: string,
 		public apiTaskSuffix: string,
 		public apiShopSuffix: string,
 		public apiStyleSuffix: string,
@@ -57,26 +62,57 @@ export class WomboDream {
 	}
 
 	/**
-	 * Create a new HTTP request agent with custom headers
+	 * Create a new HTTP request agent with custom headers for dream API
 	 * @example
 	 * ```ts
-	 * const agent = await dreamInstance.buildHttpRequestAgent();
+	 * const agent = await dreamInstance.buildHttpRequestAgentForDreamApi();
 	 * agent.get('https://app.wombo.art').then(res => console.log(res.data));
 	 * ```
 	 */
-	async buildHttpRequestAgent(): Promise<AxiosInstance> {
-		const authorisationToken =
-			await this.authentifier.obtainAuthorisationToken();
+	async buildHttpRequestAgentForDreamApi(): Promise<AxiosInstance> {
+		return this.buildHttpRequestAgent({
+			baseURL: this.buildRawApiTaskUrl(),
+			headers: {
+				Origin: this.originUrl,
+				Referer: this.originUrl,
+				Authorization: `Bearer ${await this.authentifier.obtainAuthorisationToken()}`,
+				service: 'Dream',
+			},
+		});
+	}
+
+	/**
+	 * Create a new HTTP request agent with custom headers for user API
+	 * @example
+	 * ```ts
+	 * const agent = await dreamInstance.buildHttpRequestAgentForApiUser();
+	 * agent.post('https://app.wombo.art/api/users', {username: "myusername"}).then(res => console.log(res.data));
+	 * ```
+	 */
+	async buildHttpRequestAgentForUserAPI(): Promise<AxiosInstance> {
+		return this.buildHttpRequestAgent({
+			baseURL: this.originUrl,
+			headers: {
+				Origin: this.originUrl,
+				Referer: this.originUrl + '/',
+				Authorization: `bearer ${await this.authentifier.obtainAuthorisationToken()}`,
+			},
+		});
+	}
+
+	/**
+	 * Create a new HTTP request agent with custom headers
+	 * @example
+	 * ```ts
+	 * const agent = await dreamInstance.buildHttpRequestAgentForApiUser({baseURL: "https://app.wombo.art", headers: {Authorization: "Bearer 12345"}});
+	 * agent.get('https://app.wombo.art').then(res => console.log(res.data));
+	 * ```
+	 */
+	async buildHttpRequestAgent(
+		config: AxiosRequestConfig<any>
+	): Promise<AxiosInstance> {
 		try {
-			const requestAgent = axios.create({
-				baseURL: this.buildRawApiTaskUrl(),
-				headers: {
-					Origin: this.originUrl,
-					Referer: this.originUrl,
-					Authorization: `Bearer ${authorisationToken}`,
-					service: 'Dream',
-				},
-			});
+			const requestAgent = axios.create(config);
 			return requestAgent;
 		} catch (error) {
 			throw { reason: 'Failed to create request agent', error };
@@ -93,14 +129,12 @@ export class WomboDream {
 	 * dreamInstance.initTask().then(console.log);
 	 * ```
 	 */
-	async initTask(premium: boolean = false): Promise<Task> {
-		const requestAgent = await this.buildHttpRequestAgent();
+	async initTask(): Promise<Task> {
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const initializedTask = await requestAgent.post(
 				this.buildRawApiTaskUrl(),
-				{
-					premium,
-				}
+				{}
 			);
 			return initializedTask.data;
 		} catch (error) {
@@ -122,7 +156,7 @@ export class WomboDream {
 	 * @example
 	 * ```ts
 	 * const task:Task;
-	 * dreamInstance.configureTask(task, "kitten", 12).then(console.log);
+	 * dreamInstance.configureTask(task, "kitten", 34).then(console.log);
 	 * ```
 	 */
 	async configureTask(
@@ -132,7 +166,7 @@ export class WomboDream {
 		input_image?: TaskImageInputSpec,
 		display_freq: number = DEFAULT_DISPLAY_FREQ
 	): Promise<Task> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const configuredTask = await requestAgent.put(
 				this.buildApiTaskUrl(task.id),
@@ -167,18 +201,17 @@ export class WomboDream {
 	 *
 	 * @example
 	 * ```ts
-	 * dreamInstance.createTask("kitten", 12).then(console.log);
+	 * dreamInstance.createTask("kitten", 34).then(console.log);
 	 * ```
 	 */
 	async createTask(
 		prompt: string,
 		style: number,
 		input_image?: TaskImageInputSpec,
-		display_freq: number = DEFAULT_DISPLAY_FREQ,
-		premium: boolean = false
+		display_freq: number = DEFAULT_DISPLAY_FREQ
 	): Promise<Task> {
 		try {
-			const initializedTask = await this.initTask(premium);
+			const initializedTask = await this.initTask();
 
 			const configuredTask = await this.configureTask(
 				initializedTask,
@@ -209,7 +242,7 @@ export class WomboDream {
 	 * ```
 	 */
 	async fetchTaskInfos(taskId: string): Promise<Task> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const task = await requestAgent.get(this.buildApiTaskUrl(taskId));
 			return task.data;
@@ -227,7 +260,7 @@ export class WomboDream {
 	 *
 	 * @example
 	 * ```ts
-	 * dreamInstance.generatePicture('kitten', 12, (task) => {
+	 * dreamInstance.generatePicture('kitten', 34, (task) => {
 	 *			console.log(task.state, 'stage', task.photo_url_list.length);
 	 *		})
 	 *		.then((task) => console.log(task?.result.final))
@@ -240,19 +273,12 @@ export class WomboDream {
 		progressCallback: (task: Task) => void = () => {},
 		input_image?: TaskImageInputSpec,
 		checkFrequency: number = DEFAULT_CHECK_FREQ,
-		display_freq: number = DEFAULT_DISPLAY_FREQ,
-		premium: boolean = false
+		display_freq: number = DEFAULT_DISPLAY_FREQ
 	): Promise<Task> {
-		let task = await this.createTask(
-			prompt,
-			style,
-			input_image,
-			display_freq,
-			premium
-		);
+		let task = await this.createTask(prompt, style, input_image, display_freq);
 
 		try {
-			while (!task.result?.final) {
+			while (task.state !== 'completed') {
 				task = await this.fetchTaskInfos(task.id);
 				progressCallback(task);
 				if (task.state === 'failed') throw new Error();
@@ -279,7 +305,7 @@ export class WomboDream {
 	 * ```
 	 */
 	async uploadImage(bufferedImage: Buffer): Promise<UploadResource> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 
 		try {
 			const resourceUploadInfos: UploadResource = (
@@ -315,7 +341,7 @@ export class WomboDream {
 	 * ```
 	 */
 	async fetchStyles(): Promise<Array<Style>> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const styles = await requestAgent.get(this.buildApiStyleUrl());
 			return styles.data;
@@ -336,7 +362,7 @@ export class WomboDream {
 	 * ```
 	 */
 	async fetchTaskShopUrl(taskId: string): Promise<String> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const taskShopUrl = await requestAgent.get(
 				this.buildApiTaskShopUrl(taskId)
@@ -365,7 +391,7 @@ export class WomboDream {
 		isPublic: boolean = false,
 		isPromptVisible: boolean = true
 	): Promise<SavedTask> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const savedTask = await requestAgent.post(this.buildRawApiGalleryUrl(), {
 				task_id: taskId,
@@ -373,6 +399,7 @@ export class WomboDream {
 				is_public: isPublic,
 				is_prompt_visible: isPromptVisible,
 			});
+
 			return savedTask.data;
 		} catch (error) {
 			throw { reason: 'Failed to save task to gallery', error };
@@ -392,7 +419,7 @@ export class WomboDream {
 	 * ```
 	 */
 	async fetchGalleryTask(taskGalleryId: number): Promise<SavedTask> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const galleryTask = await requestAgent.get(
 				this.buildApiGalleryUrl(`${taskGalleryId}`)
@@ -414,7 +441,7 @@ export class WomboDream {
 	 * ```
 	 */
 	async fetchGalleryTasks(): Promise<Array<SavedTask>> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const galleryTask = await requestAgent.get(this.buildRawApiGalleryUrl());
 			return galleryTask.data.items;
@@ -436,7 +463,7 @@ export class WomboDream {
 	 * ```
 	 */
 	async deleteGalleryTask(taskGalleryId: number): Promise<void> {
-		const requestAgent = await this.buildHttpRequestAgent();
+		const requestAgent = await this.buildHttpRequestAgentForDreamApi();
 		try {
 			const galleryTask = await requestAgent.delete(
 				this.buildApiGalleryUrl(`${taskGalleryId}`)
@@ -444,6 +471,29 @@ export class WomboDream {
 			return galleryTask.data;
 		} catch (error) {
 			throw { reason: 'Failed to delete gallery task', error };
+		}
+	}
+
+	/**
+	 * Set account username
+	 *
+	 * @warning YOU NEED TO SET A USERNAME TO INTERRACT WITH GALLERY
+	 *
+	 * @example
+	 * ```ts
+	 * dreamInstance.setUsername("myusername");
+	 * ```
+	 */
+	async setUsername(username: string): Promise<void> {
+		const requestAgent = await this.buildHttpRequestAgentForUserAPI();
+		let user;
+		try {
+			user = await requestAgent.post(this.apiUserSuffix, {
+				username: username,
+			});
+			return user.data;
+		} catch (error) {
+			throw { reason: 'Failed to set username', error };
 		}
 	}
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { sprintf } from 'sprintf-js';
-import { AuthorisationCache, CreditentialsBody } from './types';
+import { AuthorisationCache, CredentialsBody } from './types';
 
 export class GoogleAuthentifier {
 	public signUpUserUrlTemplate =
@@ -16,8 +16,7 @@ export class GoogleAuthentifier {
 
 	constructor(
 		public secret_key: string,
-		public email?: string,
-		public password?: string
+		public credentials?: CredentialsBody
 	) {}
 
 	buildSignUpUserUrl(): string {
@@ -47,7 +46,7 @@ export class GoogleAuthentifier {
 	 * 	}).then(console.log)
 	 * ```
 	 */
-	async signUp(signUpBody?: CreditentialsBody): Promise<AuthorisationCache> {
+	async signUp(signUpBody?: CredentialsBody): Promise<AuthorisationCache> {
 		return new Promise(async (resolve, reject) => {
 			axios
 				.post(this.buildSignUpUserUrl(), signUpBody)
@@ -61,9 +60,14 @@ export class GoogleAuthentifier {
 	}
 
 	/**
-	 * Sign in with email and password
+	 * Sign in
 	 *
-	 * @example Sign in as new user
+	 * @example Sign in with instance credentials
+	 *```ts
+	 * authentifierInstance.signIn().then(console.log)
+	 * ```
+	 *
+	 * @example Sign in with new credentials
 	 * ```ts
 	 * authentifierInstance.signIn({
 	 * 		email: "my@mail.com",
@@ -71,7 +75,9 @@ export class GoogleAuthentifier {
 	 * 	}).then(console.log)
 	 * ```
 	 */
-	async signIn(signInBody: CreditentialsBody): Promise<AuthorisationCache> {
+	async signIn(
+		signInBody: CredentialsBody = this.credentials!
+	): Promise<AuthorisationCache> {
 		return new Promise(async (resolve, reject) => {
 			axios
 				.post(this.buildSignInUserUrl(), {
@@ -82,7 +88,11 @@ export class GoogleAuthentifier {
 					resolve(this.setAuthorisationDataCacheFromFetchedData(res.data));
 				})
 				.catch((error) =>
-					reject({ reason: 'Unable to signIn', signInBody, error })
+					reject({
+						reason: 'Unable to signIn',
+						signInBody,
+						error,
+					})
 				);
 		});
 	}
@@ -157,8 +167,8 @@ export class GoogleAuthentifier {
 			if (this.authorisationDataCache) {
 				await this.refreshAuthorisationToken();
 			} else {
-				if (this.email && this.password) {
-					await this.signIn({ email: this.email!, password: this.password! });
+				if (this.credentials) {
+					await this.signIn();
 				} else {
 					await this.signUp();
 				}
