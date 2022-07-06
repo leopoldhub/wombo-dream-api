@@ -17,22 +17,6 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm run build
-      #- run: npm test
-      - uses: actions/cache@v2
-        id: restore-build
-        with:
-          path: ./*
-          key: ${{ github.sha }}
-          
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-      - run: npm test
       - uses: actions/cache@v2
         id: restore-build
         with:
@@ -40,7 +24,7 @@ jobs:
           key: ${{ github.sha }}
 
   publish-npm:
-    needs: test
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
