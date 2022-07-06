@@ -4,6 +4,10 @@ Unofficial API for [Wombo Dream](https://app.wombo.art)
 
 <p style="color: lime;">❤ Feel free to contribute to the project ❤ </p>
 
+> **Used by**
+>
+> - [recordcrash/ravenbot](https://github.com/recordcrash/ravenbot)
+
 ## Upcomming features
 
 - NFT minting
